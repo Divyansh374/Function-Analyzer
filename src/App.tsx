@@ -5,7 +5,7 @@ function App() {
 
   return (
     <main>
-      <h1>Function Analyzer</h1>
+      <h1>Functionyzer</h1>
 
       <div>
         <label htmlFor="expression">f(x) = </label>
