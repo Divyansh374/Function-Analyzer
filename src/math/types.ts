@@ -3,7 +3,7 @@ export type TokenType =
   | "identifier"
   | "operator"
   | "leftBrac"
-  | "RightBrac";
+  | "rightBrac";
 
 export interface Token {
   type: TokenType;

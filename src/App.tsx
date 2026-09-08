@@ -6,7 +6,6 @@ function App() {
   return (
     <main>
       <h1>Functionyzer</h1>
-
       <div>
         <label htmlFor="expression">f(x) = </label>
         <input
@@ -18,7 +17,6 @@ function App() {
 
         <button>Analyze</button>
       </div>
-
       <p>Current function: {expression}</p>
     </main>
   );
