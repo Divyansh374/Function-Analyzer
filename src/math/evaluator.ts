@@ -34,7 +34,28 @@ export function evaluate(expression: Expression, x: number): number {
       break;
     }
 
-    case "function":
-      throw new Error(`Function ${expression.name} is not supported yet`);
+    case "function": {
+      const argument = evaluate(expression.argument, x);
+
+      switch (expression.name) {
+        case "sin":
+          return Math.sin(argument);
+
+        case "cos":
+          return Math.cos(argument);
+
+        case "tan":
+          return Math.tan(argument);
+
+        case "sqrt":
+          return Math.sqrt(argument);
+
+        case "log":
+          return Math.log(argument);
+
+        case "abs":
+          return Math.abs(argument);
+      }
+    }
   }
 }

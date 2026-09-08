@@ -1,6 +1,7 @@
 import type { Expression, Token } from "./types";
 
 const OPERATORS = new Set(["+", "-", "*", "/", "^"]);
+const FUNCTIONS = new Set(["sin", "cos", "tan", "sqrt", "log", "abs"]);
 
 export function tokenize(input: string): Token[] {
   const tokens: Token[] = [];
@@ -202,6 +203,24 @@ class Parser {
         return {
           type: "variable",
           name: "x",
+        };
+      }
+
+      if (FUNCTIONS.has(token.value)) {
+        if (!this.matchType("leftBrac")) {
+          throw new Error(`Expected "(" after function "${token.value}"`);
+        }
+
+        const argument = this.parseAdditive();
+
+        if (!this.matchType("rightBrac")) {
+          throw new Error(`Expected ")" after function argument`);
+        }
+
+        return {
+          type: "function",
+          name: token.value as "sin" | "cos" | "tan" | "sqrt" | "log" | "abs",
+          argument,
         };
       }
 
