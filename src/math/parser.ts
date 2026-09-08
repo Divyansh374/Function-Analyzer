@@ -56,7 +56,7 @@ export function tokenize(input: string): Token[] {
     // Operators
     if (OPERATORS.has(char)) {
       tokens.push({
-        type: "identifier",
+        type: "operator",
         value: char,
       });
 
@@ -255,5 +255,9 @@ class Parser {
 }
 
 export function parse(input: string): Expression {
-  return new Parser(tokenize(input)).parse();
+  const tokens = tokenize(input);
+
+  console.log("TOKENS:", tokens);
+
+  return new Parser(tokens).parse();
 }
