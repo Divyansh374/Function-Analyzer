@@ -2,26 +2,29 @@ import { useState } from "react";
 
 import { FunctionInput } from "./components/FunctionInput";
 import { FunctionGraph } from "./components/FunctionGraph";
+import { AnalysisPanel } from "./components/AnalysisPanel";
+
+import { analyzeFunction } from "./math/analyzer";
 import { generateGraphPoints } from "./math/graph";
 import { parse } from "./math/parser";
 import type { Expression } from "./math/types";
 
 function App() {
-  const [inputExpression, setInputExpression] = useState("x^2");
+  const [inputExpression, setInputExpression] = useState("x^2 - 4*x + 3");
+
   const [parsedExpression, setParsedExpression] = useState<Expression | null>(
-    () => parse("x^2"),
+    () => parse("x^2 - 4*x + 3"),
   );
+
   const [error, setError] = useState<string | null>(null);
 
-  function analyzeFunction() {
+  function analyze() {
     try {
       const expression = parse(inputExpression);
 
       setParsedExpression(expression);
       setError(null);
     } catch (error) {
-      setParsedExpression(null);
-
       setError(error instanceof Error ? error.message : "Invalid expression");
     }
   }
@@ -30,6 +33,8 @@ function App() {
     ? generateGraphPoints(parsedExpression, -10, 10, 0.1)
     : [];
 
+  const analysis = parsedExpression ? analyzeFunction(parsedExpression) : null;
+
   return (
     <main>
       <h1>Function Analyzer</h1>
@@ -37,11 +42,17 @@ function App() {
       <FunctionInput
         value={inputExpression}
         onChange={setInputExpression}
-        onAnalyze={analyzeFunction}
+        onAnalyze={analyze}
         error={error}
       />
 
-      {parsedExpression && <FunctionGraph points={points} />}
+      {parsedExpression && analysis && (
+        <>
+          <FunctionGraph points={points} />
+
+          <AnalysisPanel analysis={analysis} />
+        </>
+      )}
     </main>
   );
 }
