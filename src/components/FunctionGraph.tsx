@@ -31,6 +31,7 @@ export function FunctionGraph({ points }: FunctionGraphProps) {
           dataKey="y"
           dot={false}
           isAnimationActive={false}
+          connectNulls={false}
         />
       </LineChart>
     </ResponsiveContainer>

@@ -1,12 +1,18 @@
 import { evaluate } from "./evaluator";
 import { toPolynomial } from "./polynomial";
+import { findNumericalRoots } from "./roots";
+
 import type { Expression } from "./types";
 
 export interface FunctionAnalysis {
   isPolynomial: boolean;
+
   degree: number | null;
+
   yIntercept: number | null;
+
   roots: number[];
+
   vertex: {
     x: number;
     y: number;
@@ -38,7 +44,7 @@ function findRoots(coefficients: number[]): number[] {
     return [-b / a];
   }
 
-  // ax² + bx + c = 0
+  // ax^2 + bx + c = 0
   if (degree === 2) {
     const [constant, linear, quadratic] = c;
 
@@ -71,15 +77,13 @@ export function analyzeFunction(expression: Expression): FunctionAnalysis {
       isPolynomial: false,
       degree: null,
       yIntercept: getYIntercept(expression),
-      roots: [],
+      roots: findNumericalRoots(expression, -10, 10, 0.01),
       vertex: null,
     };
   }
 
   const coefficients = trimCoefficients(polynomial.coefficients);
-
   const degree = coefficients.length - 1;
-
   const roots = findRoots(coefficients);
 
   let vertex = null;
