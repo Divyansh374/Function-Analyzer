@@ -7,6 +7,10 @@ import { AnalysisPanel } from "./components/AnalysisPanel";
 import { analyzeFunction } from "./math/analyzer";
 import { generateGraphPoints } from "./math/graph";
 import { parse } from "./math/parser";
+import { differentiate } from "./math/differentiator";
+import { simplify } from "./math/simplifier";
+import { stringify } from "./math/stringify";
+
 import type { Expression } from "./math/types";
 
 function App() {
@@ -35,6 +39,10 @@ function App() {
 
   const analysis = parsedExpression ? analyzeFunction(parsedExpression) : null;
 
+  const derivative = parsedExpression
+    ? simplify(differentiate(parsedExpression))
+    : null;
+
   return (
     <main>
       <h1>Function Analyzer</h1>
@@ -52,6 +60,12 @@ function App() {
 
           <AnalysisPanel analysis={analysis} />
         </>
+      )}
+      {derivative && (
+        <section>
+          <h2>Derivative</h2>
+          <p>f'(x) = {stringify(derivative)}</p>
+        </section>
       )}
     </main>
   );
