@@ -12,27 +12,31 @@ export function FunctionInput({
   error,
 }: FunctionInputProps) {
   return (
-    <section>
-      <label htmlFor="function-input">f(x) = </label>
+    <div className="function-input">
+      <label htmlFor="function-input">Enter a function</label>
 
-      <input
-        id="function-input"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            onAnalyze();
-          }
-        }}
-        placeholder="e.g. x^2 + 2*x + 1"
-        spellCheck={false}
-      />
+      <div className="input-row">
+        <span className="function-prefix">f(x) = </span>
 
-      <button type="button" onClick={onAnalyze}>
-        Analyze
-      </button>
+        <input
+          id="function-input"
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              onAnalyze();
+            }
+          }}
+          placeholder="x^2 + 2*x + 1"
+          spellCheck={false}
+        />
 
-      {error && <p>{error}</p>}
-    </section>
+        <button type="button" onClick={onAnalyze}>
+          Analyze
+        </button>
+      </div>
+
+      {error && <p className="input-error">{error}</p>}
+    </div>
   );
 }

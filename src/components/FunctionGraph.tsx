@@ -16,7 +16,7 @@ interface FunctionGraphProps {
 
 export function FunctionGraph({ points }: FunctionGraphProps) {
   return (
-    <ResponsiveContainer width="100%" height={500}>
+    <ResponsiveContainer width="100%" height="100%">
       <LineChart data={points}>
         <CartesianGrid strokeDasharray="3 3" />
 

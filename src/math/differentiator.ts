@@ -1,5 +1,51 @@
 import type { Expression } from "./types";
 
+function getConstantValue(expression: Expression): number | null {
+  switch (expression.type) {
+    case "number":
+      return expression.value;
+
+    case "variable":
+      return null;
+
+    case "unary": {
+      const value = getConstantValue(expression.operand);
+
+      return value === null ? null : -value;
+    }
+
+    case "binary": {
+      const left = getConstantValue(expression.left);
+      const right = getConstantValue(expression.right);
+
+      if (left === null || right === null) {
+        return null;
+      }
+
+      switch (expression.operator) {
+        case "+":
+          return left + right;
+
+        case "-":
+          return left - right;
+
+        case "*":
+          return left * right;
+
+        case "/":
+          return right === 0 ? null : left / right;
+
+        case "^":
+          return Math.pow(left, right);
+      }
+      break;
+    }
+
+    case "function":
+      return null;
+  }
+}
+
 export function differentiate(expression: Expression): Expression {
   switch (expression.type) {
     case "number":
@@ -96,22 +142,20 @@ export function differentiate(expression: Expression): Expression {
           };
 
         case "^": {
-          // For now we support f(x)^n,
-          // where n is a constant.
-          if (right.type !== "number") {
+          const exponent = getConstantValue(expression.right);
+
+          if (exponent === null) {
             throw new Error(
               "Differentiation of variable exponents is not supported yet",
             );
           }
-
-          const n = right.value;
 
           return {
             type: "binary",
             operator: "*",
             left: {
               type: "number",
-              value: n,
+              value: exponent,
             },
             right: {
               type: "binary",
@@ -119,13 +163,13 @@ export function differentiate(expression: Expression): Expression {
               left: {
                 type: "binary",
                 operator: "^",
-                left,
+                left: expression.left,
                 right: {
                   type: "number",
-                  value: n - 1,
+                  value: exponent - 1,
                 },
               },
-              right: leftDerivative,
+              right: differentiate(expression.left),
             },
           };
         }
