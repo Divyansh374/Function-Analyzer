@@ -10,9 +10,9 @@ import { generateGraphPoints } from "./math/graph";
 import { parse } from "./math/parser";
 import { differentiate } from "./math/differentiator";
 import { simplify } from "./math/simplifier";
-import { stringify } from "./math/stringify";
 
 import type { Expression } from "./math/types";
+import { MathExpression } from "./components/MathExpression";
 
 function App() {
   const [inputExpression, setInputExpression] = useState("x^2 - 4*x + 3");
@@ -104,11 +104,10 @@ function App() {
                     <div className="derivative-symbol">f′</div>
                   </div>
 
-                  <div className="derivative-box">
+                  <p className="derivative-expression">
                     <span>f′(x) =</span>
-
-                    <code>{stringify(derivative)}</code>
-                  </div>
+                    <MathExpression expression={derivative} />
+                  </p>
                 </div>
               )}
             </section>
