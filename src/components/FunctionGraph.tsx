@@ -22,7 +22,7 @@ export function FunctionGraph({ points }: FunctionGraphProps) {
 
         <XAxis dataKey="x" type="number" />
 
-        <YAxis />
+        <YAxis domain={[-10, 10]} allowDataOverflow={false} />
 
         <Tooltip />
 

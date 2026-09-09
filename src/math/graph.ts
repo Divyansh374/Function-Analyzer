@@ -1,4 +1,5 @@
 import { evaluate } from "./evaluator";
+
 import type { Expression } from "./types";
 
 export interface GraphPoint {
@@ -6,8 +7,10 @@ export interface GraphPoint {
   y: number | null;
 }
 
-const GRAPH_LIMIT = 20;
-const DISCONTINUITY_THRESHOLD = 5;
+const DISPLAY_Y_MIN = -10;
+const DISPLAY_Y_MAX = 10;
+
+const SLOPE_LIMIT = 150;
 
 export function generateGraphPoints(
   expression: Expression,
@@ -28,29 +31,25 @@ export function generateGraphPoints(
 
     let graphY: number | null = y;
 
-    // Values that are undefined or too large to display
-    // are treated as a break in the graph.
-    if (!Number.isFinite(y) || Math.abs(y) > GRAPH_LIMIT) {
+    if (!Number.isFinite(y) || y < DISPLAY_Y_MIN || y > DISPLAY_Y_MAX) {
       graphY = null;
     }
 
-    // Detect a likely vertical discontinuity.
-    //
-    // A large sign change is usually an asymptote rather
-    // than a root.
-    if (
-      previousY !== null &&
-      graphY !== null &&
-      previousY * graphY < 0 &&
-      Math.abs(previousY) > DISCONTINUITY_THRESHOLD &&
-      Math.abs(graphY) > DISCONTINUITY_THRESHOLD
-    ) {
-      points[points.length - 1] = {
-        x: previousX!,
-        y: null,
-      };
+    // Detect sudden jumps between neighbouring points
+    if (previousX !== null && previousY !== null && graphY !== null) {
+      const slope = Math.abs((graphY - previousY) / (x - previousX));
 
-      graphY = null;
+      if (slope > SLOPE_LIMIT) {
+        points.push({
+          x,
+          y: null,
+        });
+
+        previousX = x;
+        previousY = null;
+
+        continue;
+      }
     }
 
     points.push({

@@ -23,11 +23,11 @@ function App() {
 
   const [error, setError] = useState<string | null>(null);
 
-  function analyze() {
+  function analyze(expression = inputExpression) {
     try {
-      const expression = parse(inputExpression);
+      const parsed = parse(expression);
 
-      setParsedExpression(expression);
+      setParsedExpression(parsed);
       setError(null);
     } catch (error) {
       setError(error instanceof Error ? error.message : "Invalid expression");
@@ -63,6 +63,7 @@ function App() {
         <section className="input-card">
           <FunctionInput
             value={inputExpression}
+            setValue={setInputExpression}
             onChange={setInputExpression}
             onAnalyze={analyze}
             error={error}

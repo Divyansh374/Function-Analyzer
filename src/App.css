@@ -130,6 +130,13 @@
   font-weight: 600;
 }
 
+.input-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100px;
+}
+
 .input-row {
   display: flex;
   align-items: center;
@@ -202,6 +209,8 @@
   transition:
     background 0.2s,
     transform 0.15s;
+
+  cursor: pointer;
 }
 
 .input-row button:hover {
@@ -209,7 +218,7 @@
 }
 
 .input-row button:active {
-  transform: translateY(1px);
+  transform: scale(0.98);
 }
 
 .input-error {
@@ -218,6 +227,47 @@
   color: #f87171;
 
   font-size: 0.85rem;
+}
+
+.recommendations {
+  min-width: 250px;
+  max-width: 300px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.recommendations button {
+  height: 30px;
+  padding: 0 10px;
+
+  border: 1px solid #303541;
+  border-radius: 10px;
+
+  background: #17181b;
+  color: white;
+
+  font-family:
+    "SFMono-Regular",
+    Consolas,
+    monospace;
+
+  font-size: 12px;
+  font-weight: 500;
+
+  transition:
+    background 0.2s,
+    transform 0.15s;
+
+  cursor: pointer;
+}
+
+.recommendations button:hover {
+  background: #282828;
+}
+
+.recommendations button:active {
+  transform: scale(0.98);
 }
 
 /* ───────────────
@@ -414,6 +464,10 @@
     font-size: 0.9rem;
   }
 
+  .function-input {
+    height: 180px;
+  }
+
   .input-card {
     padding: 16px;
   }
@@ -424,6 +478,10 @@
     grid-template-columns: auto minmax(0, 1fr);
 
     gap: 10px;
+  }
+
+  .recommendations {
+    margin-top: 20px;
   }
 
   .input-row input {
