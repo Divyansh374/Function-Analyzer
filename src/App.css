@@ -335,6 +335,57 @@
   font-size: 1.1rem;
 }
 
+.derivative-expression {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: "Cascadia Code", monospace;
+  font-size: 1.4rem;
+  color: #d7d9e0;
+  overflow-x: auto;
+  padding: 20px;
+}
+
+.math-expression {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.math-expression sup {
+  font-size: 0.65em;
+  line-height: 0;
+  position: relative;
+  top: -0.25em;
+}
+
+.math-operator {
+  margin: 0 5px;
+  color: #9ca3af;
+}
+
+.math-fraction {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  line-height: 1;
+  margin: 0 6px;
+}
+
+.math-numerator,
+.math-denominator {
+  padding: 3px 10px;
+}
+
+.math-fraction-line {
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+}
+
 /* ───────────────
    Graph
    ─────────────── */

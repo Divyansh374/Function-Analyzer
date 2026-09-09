@@ -5,12 +5,52 @@ interface MathExpressionProps {
   expression: Expression;
 }
 
+function getConstantValue(expression: Expression): number | null {
+  switch (expression.type) {
+    case "number":
+      return expression.value;
+
+    case "unary": {
+      const value = getConstantValue(expression.operand);
+      return value === null ? null : -value;
+    }
+
+    case "binary": {
+      const left = getConstantValue(expression.left);
+      const right = getConstantValue(expression.right);
+
+      if (left === null || right === null) {
+        return null;
+      }
+
+      switch (expression.operator) {
+        case "+":
+          return left + right;
+        case "-":
+          return left - right;
+        case "*":
+          return left * right;
+        case "/":
+          return right === 0 ? null : left / right;
+        case "^":
+          return Math.pow(left, right);
+      }
+      break;
+    }
+
+    case "variable":
+    case "function":
+      return null;
+  }
+}
+
 function formatNumber(value: number): string {
   if (Number.isInteger(value)) {
     return String(value);
   }
 
-  // Handle common fractions produced by differentiation
+  const rounded = Number(value.toFixed(6));
+
   const fractions: [number, number, number][] = [
     [1 / 2, 1, 2],
     [1 / 3, 1, 3],
@@ -33,7 +73,14 @@ function formatNumber(value: number): string {
     }
   }
 
-  return Number(value.toFixed(4)).toString();
+  return String(rounded);
+}
+
+function isNumber(expression: Expression): expression is {
+  type: "number";
+  value: number;
+} {
+  return expression.type === "number";
 }
 
 function renderExpression(expression: Expression): ReactNode {
@@ -48,6 +95,9 @@ function renderExpression(expression: Expression): ReactNode {
       return <>−{renderExpression(expression.operand)}</>;
 
     case "function":
+      if (expression.name === "sqrt") {
+        return <>√({renderExpression(expression.argument)})</>;
+      }
       return (
         <>
           {expression.name}({renderExpression(expression.argument)})
@@ -55,53 +105,84 @@ function renderExpression(expression: Expression): ReactNode {
       );
 
     case "binary": {
-      if (expression.operator === "^") {
-        const base = expression.left;
+      const { operator, left, right } = expression;
 
+      // Powers
+      if (operator === "^") {
         const needsParentheses =
-          base.type === "binary" || base.type === "unary";
+          left.type === "binary" || left.type === "unary";
+
+        const exponent = getConstantValue(right);
 
         return (
           <>
             {needsParentheses && "("}
-            {renderExpression(base)}
+            {renderExpression(left)}
             {needsParentheses && ")"}
-            <sup>{renderExpression(expression.right)}</sup>
+
+            <sup>
+              {exponent !== null
+                ? formatNumber(exponent)
+                : renderExpression(right)}
+            </sup>
           </>
         );
       }
 
-      if (expression.operator === "*") {
+      // Multiplication
+      if (operator === "*") {
+        // 2 * x → 2x
+        if (isNumber(left) && right.type === "variable") {
+          return (
+            <>
+              {renderExpression(left)}
+              {renderExpression(right)}
+            </>
+          );
+        }
+
+        // x * 2 → 2x
+        if (left.type === "variable" && isNumber(right)) {
+          return (
+            <>
+              {renderExpression(right)}
+              {renderExpression(left)}
+            </>
+          );
+        }
+
         return (
           <>
-            {renderExpression(expression.left)}
+            {renderExpression(left)}
             <span className="math-operator">·</span>
-            {renderExpression(expression.right)}
+            {renderExpression(right)}
           </>
         );
       }
 
-      if (expression.operator === "/") {
+      // Division
+      if (operator === "/") {
         return (
           <span className="math-fraction">
-            <span className="math-numerator">
-              {renderExpression(expression.left)}
-            </span>
+            <span className="math-numerator">{renderExpression(left)}</span>
 
             <span className="math-fraction-line" />
 
-            <span className="math-denominator">
-              {renderExpression(expression.right)}
-            </span>
+            <span className="math-denominator">{renderExpression(right)}</span>
           </span>
         );
       }
 
+      // Addition / subtraction
       return (
         <>
-          {renderExpression(expression.left)}
-          <span className="math-operator">{expression.operator}</span>
-          {renderExpression(expression.right)}
+          {renderExpression(left)}
+
+          <span className="math-operator">
+            {operator === "-" ? "−" : operator}
+          </span>
+
+          {renderExpression(right)}
         </>
       );
     }

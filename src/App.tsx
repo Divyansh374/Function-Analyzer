@@ -105,7 +105,6 @@ function App() {
                   </div>
 
                   <p className="derivative-expression">
-                    <span>f′(x) =</span>
                     <MathExpression expression={derivative} />
                   </p>
                 </div>
